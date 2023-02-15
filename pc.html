@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <script
+      type="text/javascript"
+      nonce="4ada8d9639284fb2ac76c56a7c7"
+      src="//local.adguard.org?ts=1675584367487&amp;type=content-script&amp;dmn=dc.lic.im&amp;pth=%2F&amp;app=msedge.exe&amp;css=3&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1"
+    ></script>
+    <script
+      type="text/javascript"
+      nonce="4ada8d9639284fb2ac76c56a7c7"
+      src="//local.adguard.org?ts=1675584367487&amp;name=AdGuard%20Extra&amp;name=AdGuard%20Popup%20Blocker&amp;type=user-script"
+    ></script> -->
+    <title>Discount & Increased Calculator</title>
+  </head>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      min-height: 100vh;
+      background: #ffffff;
+      display: grid;
+      place-items: center;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-size: 1.25rem;
+      width: 100%;
+    }
+
+    input {
+      margin: 0.2em 0;
+      padding: 0.5em 0.75em;
+      width: 100%;
+    }
+
+    select {
+      margin: 1em 0;
+      width: 100%;
+      padding: 0.5em 0.75em;
+    }
+
+    button {
+      margin-top: 3rem;
+    }
+
+    .input-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card {
+      width: min(500px, 90%);
+      margin: 0 auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
+      /* padding: 1.5em 2em; */
+    }
+
+    .result-card {
+      margin: 0 auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
+      padding: 5px;
+      text-align: center;
+      position: relative;
+    }
+
+    .result-card-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e2665c;
+    }
+
+    .result-card-value {
+      font-size: 18px;
+      font-weight: 600;
+      padding-top: 8px;
+      padding-bottom: 8px;
+      color: #666666;
+    }
+
+    .discount-badge {
+      top: 0;
+      right: 0;
+      position: absolute;
+      background-color: #d40d0d;
+      color: #e5e4e7;
+      border-radius: 10px;
+      padding: 4px;
+      border-top-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+      font-size: 12px;
+    }
+
+    .card-header {
+      background-color: #e2665c;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      font-size: 24px;
+    }
+    .card-body {
+      padding: 0.5em 1em;
+    }
+
+    .calculate {
+      padding: 0.75em 0;
+      background: cornflowerblue;
+      color: white;
+      text-transform: capitalize;
+      font-weight: 700;
+      border: none;
+    }
+
+    .calculate:hover {
+      opacity: 0.7;
+    }
+
+    .reset {
+      margin-top: 20px;
+      margin-bottom: 10px;
+      padding: 0.75em 0;
+      background: #e2665c;
+      color: white;
+      text-transform: capitalize;
+      font-weight: 700;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+    }
+
+    .result-item p span {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-gap: 20px;
+    }
+
+    .row-gap-10 {
+      grid-gap: 10px;
+    }
+
+    .input-field {
+      border: 0px;
+      background-color: #e5e4e7;
+      border-radius: 10px;
+      border-top-right-radius: 0px;
+      height: 40px;
+      font-weight: 600;
+    }
+
+    .input-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #828282;
+      margin-left: 5px;
+    }
+
+    .col-6 {
+      grid-column: span 6;
+    }
+    .col-3 {
+      grid-column: span 3;
+    }
+    .col {
+      grid-column: span 12;
+    }
+
+    @media (max-width: 450px) {
+      .input-item {
+        flex-direction: column;
+      }
+    }
+  </style>
+  <body>
+    <div class="card">
+      <div class="card-header">
+        <span style="color: white">Percentage Calculator</span>
+      </div>
+
+      <div class="card-body">
+        <div class="form">
+          <div class="row">
+            <div class="col-6">
+              <label class="input-label" for="original-price">Price</label>
+              <input class="input-field" type="number" id="amount" max="999999999999999" min="0" />
+            </div>
+            <div class="col-6">
+              <label class="input-label" for="discount-percentage" 
+                >Discount %</label
+              >
+              <input
+                class="input-field"
+                type="number"
+                id="discount-percentage"
+                max="999" min="0"
+                maxlength="5"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top: 20px">
+          <div class="col-6">
+            <div class="result-card">
+              <span class="result-card-label">Initial Price</span><br />
+              <span id="in_amount" class="result-card-value">0</span>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="result-card">
+              <span class="result-card-label">Saving</span><br />
+              <span id="saved_amount" class="result-card-value">0</span>
+              <!-- <div id="discount_badge" class="discount-badge" style="">0%</div> -->
+            </div>
+          </div>
+        </div>
+        <div class="row" style="margin-top: 10px">
+          <div class="col-6">
+            <div class="result-card">
+              <span id="dis_add_label" class="result-card-label">% + Amount</span><br />
+              <span id="dis_add_amount" class="result-card-value">0</span>
+              <div id="discount_badge_add" class="discount-badge" style="background-color: rgb(124, 170, 33);">+ 0%</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="result-card">
+              <span id="dis_red_label" class="result-card-label">% - Amount</span><br />
+              <span id="dis_red_amount" class="result-card-value">0</span>
+              <div id="discount_badge_red" class="discount-badge" style="background-color: rgb(170, 33, 97);">- 0%</div>
+            </div>
+          </div>
+        </div>
+
+        <input
+          type="reset"
+          value="Reset"
+          onClick="window.location.reload()"
+          class="reset"
+        />
+      </div>
+    </div>
+  </body>
+
+  <script>
+    const amount = document.getElementById("amount");
+    const dp = document.getElementById("discount-percentage");
+
+    const discountAddedAmount = document.getElementById("dis_add_amount");
+    const discountReducedAmount = document.getElementById("dis_red_amount");
+    const initAmount = document.getElementById("in_amount");
+    const savedAmount = document.getElementById("saved_amount");
+    const disBadge = document.getElementById("discount_badge");
+    const disBadgeAdd = document.getElementById("discount_badge_add");
+    const disBadgeRed = document.getElementById("discount_badge_red");
+
+    function calculate() {
+      if(amount.value > 999999999999999) {
+        amount.value = 999999999999999;
+      }
+      if(dp.value > 999) {
+        dp.value = 999;
+      }
+      initAmount.innerHTML = parseFloat(amount.value).toFixed(2);
+      discountAddedAmount.innerHTML = (amount.value * (1 + dp.value / 100)).toFixed(2);
+      savedAmount.innerHTML = ((amount.value * dp.value) / 100).toFixed(2);
+      discountReducedAmount.innerHTML =
+      (amount.value - (amount.value * dp.value) / 100).toFixed(2);
+      disBadgeAdd.innerHTML = "+ " + parseFloat(dp.value||0).toFixed(2) + "%";
+      disBadgeRed.innerHTML = "- " + parseFloat(dp.value||0).toFixed(2) + "%";
+    }
+
+    amount.addEventListener("input", calculate);
+    dp.addEventListener("input", calculate);
+
+    // code by ismail Hossain
+  </script>
+</html>
